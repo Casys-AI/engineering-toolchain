@@ -46,7 +46,7 @@ RUN deno cache --minimum-dependency-age=0 \
 
 # Exercise the published package as it will run in the container. This catches
 # non-TypeScript package assets that are missing from Deno's module graph.
-RUN deno eval --allow-all --minimum-dependency-age=0 \
+RUN deno eval --minimum-dependency-age=0 \
       'import { runCadScript } from "jsr:@casys/mcp-build123d@0.1.2"; const result = await runCadScript("from build123d import Box\nresult = Box(1, 1, 1)"); if (result.metrics.volume_mm3 !== 1) throw new Error("build123d package smoke test failed");'
 
 COPY entrypoint.sh /entrypoint.sh
