@@ -60,7 +60,7 @@ Notes that matter:
 
 ## Version pinning
 
-The image pins exact server versions — currently `mcp-syson@0.3.0`, `mcp-build123d@0.1.1`, `mcp-calculix@0.1.1`. Bumping them is a deliberate one-line Dockerfile change, never a `latest` drift. The base is Ubuntu 24.04 (Debian trixie dropped `calculix-ccx`), with the Deno binary copied from the official image.
+The image pins exact server versions — currently `mcp-syson@0.3.1`, `mcp-build123d@0.1.2`, `mcp-calculix@0.1.1`. Bumping them is a deliberate one-line Dockerfile change, never a `latest` drift. The base is Ubuntu 24.04 (Debian trixie dropped `calculix-ccx`), with the Deno binary copied from the official image.
 
 ## Security model
 

@@ -40,9 +40,14 @@ WORKDIR /work
 # --minimum-dependency-age=0: @casys packages are often published and
 # consumed the same day; the 24h supply-chain default would refuse them.
 RUN deno cache --minimum-dependency-age=0 \
-      jsr:@casys/mcp-syson@0.3.0/server \
-      jsr:@casys/mcp-build123d@0.1.1/server \
+      jsr:@casys/mcp-syson@0.3.1/server \
+      jsr:@casys/mcp-build123d@0.1.2/server \
       jsr:@casys/mcp-calculix@0.1.1/server
+
+# Exercise the published package as it will run in the container. This catches
+# non-TypeScript package assets that are missing from Deno's module graph.
+RUN deno eval --allow-all --minimum-dependency-age=0 \
+      'import { runCadScript } from "jsr:@casys/mcp-build123d@0.1.2"; const result = await runCadScript("from build123d import Box\nresult = Box(1, 1, 1)"); if (result.metrics.volume_mm3 !== 1) throw new Error("build123d package smoke test failed");'
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
