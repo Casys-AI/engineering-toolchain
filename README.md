@@ -13,11 +13,11 @@ The first argument selects a **stateless HTTP** server. Callers must pass its
 port and hostname explicitly; the image exposes HTTP only.
 
 ```bash
-docker run --rm -p 127.0.0.1:3009:3009 ghcr.io/casys-ai/engineering-toolchain:0.2.0 \
+docker run --rm -p 127.0.0.1:3009:3009 ghcr.io/casys-ai/engineering-toolchain:0.3.0 \
   syson --port=3009 --hostname=0.0.0.0
-docker run --rm -p 127.0.0.1:3014:3014 ghcr.io/casys-ai/engineering-toolchain:0.2.0 \
+docker run --rm -p 127.0.0.1:3014:3014 ghcr.io/casys-ai/engineering-toolchain:0.3.0 \
   build123d --port=3014 --hostname=0.0.0.0
-docker run --rm -p 127.0.0.1:3015:3015 ghcr.io/casys-ai/engineering-toolchain:0.2.0 \
+docker run --rm -p 127.0.0.1:3015:3015 ghcr.io/casys-ai/engineering-toolchain:0.3.0 \
   calculix --port=3015 --hostname=0.0.0.0
 ```
 
@@ -57,7 +57,7 @@ specifiers and frozen `deno.lock` bind them to `mcp-syson@0.4.0`,
 (Debian trixie dropped `calculix-ccx`), with the Deno binary copied from the
 official image.
 
-The `0.2.0` image is published for both `linux/amd64` and `linux/arm64`; Compose
+The `0.3.0` image is published for both `linux/amd64` and `linux/arm64`; Compose
 selects the native architecture instead of forcing emulation.
 
 ## Security model
@@ -73,8 +73,8 @@ themselves never do.
 ## Build locally
 
 ```bash
-docker build -t engineering-toolchain:local-0.2.0 .
-docker run --rm engineering-toolchain:local-0.2.0 calculix --port=3015 --hostname=0.0.0.0
+docker build -t engineering-toolchain:local-0.3.0 .
+docker run --rm engineering-toolchain:local-0.3.0 calculix --port=3015 --hostname=0.0.0.0
 ```
 
 ## License
