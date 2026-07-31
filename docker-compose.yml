@@ -52,7 +52,13 @@ services:
       syson-db:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/actuator/health"]
+      test: [
+        "CMD",
+        "wget",
+        "-q",
+        "--spider",
+        "http://localhost:8080/actuator/health",
+      ]
       interval: 10s
       timeout: 5s
       retries: 20
@@ -63,7 +69,6 @@ services:
 
   mcp-syson:
     image: "${TOOLCHAIN_IMAGE:-ghcr.io/casys-ai/engineering-toolchain:0.2.0}"
-    platform: linux/amd64
     command: ["syson", "--port=3009", "--hostname=0.0.0.0"]
     environment:
       SYSON_URL: http://syson-app:8080
@@ -76,7 +81,6 @@ services:
 
   mcp-build123d:
     image: "${TOOLCHAIN_IMAGE:-ghcr.io/casys-ai/engineering-toolchain:0.2.0}"
-    platform: linux/amd64
     command: ["build123d", "--port=3014", "--hostname=0.0.0.0"]
     ports:
       - "127.0.0.1:3014:3014"
@@ -86,7 +90,6 @@ services:
 
   mcp-calculix:
     image: "${TOOLCHAIN_IMAGE:-ghcr.io/casys-ai/engineering-toolchain:0.2.0}"
-    platform: linux/amd64
     command: ["calculix", "--port=3015", "--hostname=0.0.0.0"]
     ports:
       - "127.0.0.1:3015:3015"
