@@ -36,13 +36,13 @@ WORKDIR /work
 
 # Pinned server versions, Deno lock and dependency-age policy are versioned
 # together. The only quarantine exclusions are the exact direct Casys pins and
-# their locked @casys/mcp-server@0.24.0 / @casys/constraint-solver@0.1.0 dependencies.
+# their locked @casys/mcp-server@0.24.1 / @casys/constraint-solver@0.1.0 dependencies.
 WORKDIR /opt/engineering-toolchain
 COPY deno.json deno.lock ./
 RUN deno cache --frozen \
       jsr:@casys/mcp-syson@0.4.0/server \
       jsr:@casys/mcp-build123d@0.2.0/server \
-      jsr:@casys/mcp-calculix@0.2.0/server \
+      jsr:@casys/mcp-calculix@0.2.1/server \
       jsr:@casys/mcp-build123d@0.2.0
 
 # Exercise the published package as it will run in the container. This catches

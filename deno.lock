@@ -3,9 +3,10 @@
   "specifiers": {
     "jsr:@casys/constraint-solver@0.1.0": "0.1.0",
     "jsr:@casys/mcp-build123d@0.2.0": "0.2.0",
-    "jsr:@casys/mcp-calculix@0.2.0": "0.2.0",
-    "jsr:@casys/mcp-server@0.24": "0.24.0",
+    "jsr:@casys/mcp-calculix@0.2.1": "0.2.1",
+    "jsr:@casys/mcp-server@0.24": "0.24.1",
     "jsr:@casys/mcp-server@0.24.0": "0.24.0",
+    "jsr:@casys/mcp-server@0.24.1": "0.24.1",
     "jsr:@casys/mcp-syson@0.4.0": "0.4.0",
     "jsr:@std/yaml@1": "1.1.2",
     "npm:@modelcontextprotocol/ext-apps@^1.7.4": "1.7.5_@modelcontextprotocol+sdk@1.30.0__zod@4.4.3_zod@4.4.3",
@@ -29,14 +30,26 @@
         "jsr:@casys/mcp-server@0.24"
       ]
     },
-    "@casys/mcp-calculix@0.2.0": {
-      "integrity": "17179c9972e498bb276d0367330783db6ac932b3213da8d0ca642b8b8a75b6e2",
+    "@casys/mcp-calculix@0.2.1": {
+      "integrity": "148eefe4814fabd4d4f7bb45f6980fdb0e92ec44b0d5cb09180ded1afe7d17d2",
       "dependencies": [
-        "jsr:@casys/mcp-server@0.24.0"
+        "jsr:@casys/mcp-server@0.24.1"
       ]
     },
     "@casys/mcp-server@0.24.0": {
       "integrity": "99a562ae3ff7081ea7d1fe121f2b59eebcdbadd15132c01734e3c92cd56d6c7c",
+      "dependencies": [
+        "jsr:@std/yaml",
+        "npm:@modelcontextprotocol/ext-apps",
+        "npm:@modelcontextprotocol/sdk",
+        "npm:@opentelemetry/api",
+        "npm:ajv",
+        "npm:hono",
+        "npm:jose"
+      ]
+    },
+    "@casys/mcp-server@0.24.1": {
+      "integrity": "5163093e08b0b0e9fba8fce0688af725a24b0ba4b352bb1b2085ec375a086ece",
       "dependencies": [
         "jsr:@std/yaml",
         "npm:@modelcontextprotocol/ext-apps",
@@ -636,8 +649,8 @@
     "dependencies": [
       "jsr:@casys/constraint-solver@0.1.0",
       "jsr:@casys/mcp-build123d@0.2.0",
-      "jsr:@casys/mcp-calculix@0.2.0",
-      "jsr:@casys/mcp-server@0.24.0",
+      "jsr:@casys/mcp-calculix@0.2.1",
+      "jsr:@casys/mcp-server@0.24.1",
       "jsr:@casys/mcp-syson@0.4.0"
     ]
   }

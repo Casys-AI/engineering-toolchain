@@ -28,7 +28,7 @@ case "$SERVER" in
     exec deno run --config /opt/engineering-toolchain/deno.json --allow-all --cached-only --frozen jsr:@casys/mcp-build123d@0.2.0/server "$@"
     ;;
   calculix)
-    exec deno run --config /opt/engineering-toolchain/deno.json --allow-all --cached-only --frozen jsr:@casys/mcp-calculix@0.2.0/server "$@"
+    exec deno run --config /opt/engineering-toolchain/deno.json --allow-all --cached-only --frozen jsr:@casys/mcp-calculix@0.2.1/server "$@"
     ;;
   *)
     echo "Usage: <syson|build123d|calculix> --port=<port> --hostname=<hostname>" >&2

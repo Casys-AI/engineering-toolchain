@@ -48,11 +48,11 @@ Notes that matter:
 ## Version pinning
 
 The image pins exact server versions — `mcp-syson@0.4.0`, `mcp-build123d@0.2.0`,
-and `mcp-calculix@0.2.0`. `deno.json` keeps a P1D dependency-age quarantine.
+and `mcp-calculix@0.2.1`. `deno.json` keeps a P1D dependency-age quarantine.
 Deno scopes an age exclusion by package name rather than package version, so the
 exclusions are limited to five audited Casys names; their `imports`, Docker
 specifiers and frozen `deno.lock` bind them to `mcp-syson@0.4.0`,
-`mcp-build123d@0.2.0`, `mcp-calculix@0.2.0`, `mcp-server@0.24.0`, and
+`mcp-build123d@0.2.0`, `mcp-calculix@0.2.1`, `mcp-server@0.24.1`, and
 `constraint-solver@0.1.0`. The runtime is cached-only. The base is Ubuntu 24.04
 (Debian trixie dropped `calculix-ccx`), with the Deno binary copied from the
 official image.
