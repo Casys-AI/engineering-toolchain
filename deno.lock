@@ -2,12 +2,14 @@
   "version": "5",
   "specifiers": {
     "jsr:@casys/constraint-solver@0.1.0": "0.1.0",
-    "jsr:@casys/mcp-build123d@0.2.0": "0.2.0",
+    "jsr:@casys/mcp-build123d@0.3.0": "0.3.0",
     "jsr:@casys/mcp-calculix@0.2.1": "0.2.1",
-    "jsr:@casys/mcp-server@0.24": "0.24.1",
     "jsr:@casys/mcp-server@0.24.0": "0.24.0",
     "jsr:@casys/mcp-server@0.24.1": "0.24.1",
+    "jsr:@casys/mcp-server@~0.24.1": "0.24.1",
     "jsr:@casys/mcp-syson@0.4.0": "0.4.0",
+    "jsr:@std/internal@^1.0.14": "1.0.14",
+    "jsr:@std/path@1": "1.1.6",
     "jsr:@std/yaml@1": "1.1.2",
     "npm:@modelcontextprotocol/ext-apps@^1.7.4": "1.7.5_@modelcontextprotocol+sdk@1.30.0__zod@4.4.3_zod@4.4.3",
     "npm:@modelcontextprotocol/sdk@^1.29.0": "1.30.0_zod@4.4.3",
@@ -24,10 +26,11 @@
         "npm:mathjs"
       ]
     },
-    "@casys/mcp-build123d@0.2.0": {
-      "integrity": "4f8ec9fcedc4230cfb2074a54500e77b064125e246ace6e6f5a19072925204e5",
+    "@casys/mcp-build123d@0.3.0": {
+      "integrity": "2d5b3be34b9bfba422ff5eea79b3ab1ba1932384aa53b1ebd00857e8b979953e",
       "dependencies": [
-        "jsr:@casys/mcp-server@0.24"
+        "jsr:@casys/mcp-server@~0.24.1",
+        "jsr:@std/path"
       ]
     },
     "@casys/mcp-calculix@0.2.1": {
@@ -65,6 +68,15 @@
       "dependencies": [
         "jsr:@casys/constraint-solver",
         "jsr:@casys/mcp-server@0.24.0"
+      ]
+    },
+    "@std/internal@1.0.14": {
+      "integrity": "291516b3d4c35024d6ffbc0a9df5bf4c64116e05b50012cf846710152d2ffdf7"
+    },
+    "@std/path@1.1.6": {
+      "integrity": "c68485c2a4dfbb5ae3cc74fae4e8c4e5d874cf8a8ed12927917235c758b46cbe",
+      "dependencies": [
+        "jsr:@std/internal"
       ]
     },
     "@std/yaml@1.1.2": {
@@ -648,7 +660,7 @@
   "workspace": {
     "dependencies": [
       "jsr:@casys/constraint-solver@0.1.0",
-      "jsr:@casys/mcp-build123d@0.2.0",
+      "jsr:@casys/mcp-build123d@0.3.0",
       "jsr:@casys/mcp-calculix@0.2.1",
       "jsr:@casys/mcp-server@0.24.1",
       "jsr:@casys/mcp-syson@0.4.0"
