@@ -5,10 +5,8 @@
 #   mcp-build123d  parametric CAD as code (Python/OCCT)
 #   mcp-calculix   FEA — Gmsh meshing + CalculiX linear static
 #
-# The first argument selects the server; everything after is passed through:
-#   docker run -i --rm ghcr.io/casys-ai/engineering-toolchain syson
-#   docker run -i --rm ghcr.io/casys-ai/engineering-toolchain build123d
-#   docker run -i --rm ghcr.io/casys-ai/engineering-toolchain calculix
+# The first argument selects the stateless HTTP server. The caller supplies
+# its explicit port and hostname, for example: syson --port=3009 --hostname=0.0.0.0
 
 # Ubuntu base rather than the Deno image's Debian trixie: calculix-ccx was
 # dropped from trixie, while Ubuntu 24.04 carries ccx 2.21, gmsh 4.12 and z3.
@@ -36,19 +34,23 @@ ENV BUILD123D_EXPORT_DIR=/exports
 RUN mkdir -p /exports /work
 WORKDIR /work
 
-# Pinned server versions — bump deliberately, never track latest.
-# --minimum-dependency-age=0: @casys packages are often published and
-# consumed the same day; the 24h supply-chain default would refuse them.
-RUN deno cache --minimum-dependency-age=0 \
-      jsr:@casys/mcp-syson@0.3.1/server \
-      jsr:@casys/mcp-build123d@0.1.2/server \
-      jsr:@casys/mcp-calculix@0.1.1/server
+# Pinned server versions, Deno lock and dependency-age policy are versioned
+# together. The only quarantine exclusions are the exact direct Casys pins and
+# their locked @casys/mcp-server@0.24.0 / @casys/constraint-solver@0.1.0 dependencies.
+WORKDIR /opt/engineering-toolchain
+COPY deno.json deno.lock ./
+RUN deno cache --frozen \
+      jsr:@casys/mcp-syson@0.4.0/server \
+      jsr:@casys/mcp-build123d@0.2.0/server \
+      jsr:@casys/mcp-calculix@0.2.0/server \
+      jsr:@casys/mcp-build123d@0.2.0
 
 # Exercise the published package as it will run in the container. This catches
 # non-TypeScript package assets that are missing from Deno's module graph.
-RUN deno eval --minimum-dependency-age=0 \
-      'import { runCadScript } from "jsr:@casys/mcp-build123d@0.1.2"; const result = await runCadScript("from build123d import Box\nresult = Box(1, 1, 1)"); if (Math.abs(result.metrics.volume_mm3 - 1) > 1e-9) throw new Error("build123d package smoke test failed");'
+RUN deno eval --cached-only --frozen \
+      'import { runCadScript } from "jsr:@casys/mcp-build123d@0.2.0"; const result = await runCadScript("from build123d import Box\nresult = Box(1, 1, 1)"); if (Math.abs(result.metrics.volume_mm3 - 1) > 1e-9) throw new Error("build123d package smoke test failed");'
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
+WORKDIR /work
 ENTRYPOINT ["/entrypoint.sh"]

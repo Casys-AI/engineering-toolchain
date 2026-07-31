@@ -1,0 +1,33 @@
+{
+  "$schema": "https://deno.land/x/deno/cli/schemas/config-file.v1.json",
+  "lock": {
+    "path": "deno.lock",
+    "frozen": true
+  },
+  "minimumDependencyAge": {
+    "age": "P1D",
+    "exclude": [
+      "jsr:@casys/mcp-syson",
+      "jsr:@casys/mcp-build123d",
+      "jsr:@casys/mcp-calculix",
+      "jsr:@casys/mcp-server",
+      "jsr:@casys/constraint-solver"
+    ]
+  },
+  "imports": {
+    "@casys/mcp-syson": "jsr:@casys/mcp-syson@0.4.0",
+    "@casys/mcp-syson/": "jsr:@casys/mcp-syson@0.4.0/",
+    "@casys/mcp-build123d": "jsr:@casys/mcp-build123d@0.2.0",
+    "@casys/mcp-build123d/": "jsr:@casys/mcp-build123d@0.2.0/",
+    "@casys/mcp-calculix": "jsr:@casys/mcp-calculix@0.2.0",
+    "@casys/mcp-calculix/": "jsr:@casys/mcp-calculix@0.2.0/",
+    "@casys/mcp-server": "jsr:@casys/mcp-server@0.24.0",
+    "@casys/mcp-server/": "jsr:@casys/mcp-server@0.24.0/",
+    "@casys/constraint-solver": "jsr:@casys/constraint-solver@0.1.0",
+    "@casys/constraint-solver/": "jsr:@casys/constraint-solver@0.1.0/"
+  },
+  "tasks": {
+    "cache": "deno cache --frozen jsr:@casys/mcp-syson@0.4.0/server jsr:@casys/mcp-build123d@0.2.0/server jsr:@casys/mcp-calculix@0.2.0/server jsr:@casys/mcp-build123d@0.2.0",
+    "cache:verify": "deno eval --cached-only --frozen 'await Promise.all([import(\"jsr:@casys/mcp-syson@0.4.0/server\"), import(\"jsr:@casys/mcp-build123d@0.2.0/server\"), import(\"jsr:@casys/mcp-calculix@0.2.0/server\"), import(\"jsr:@casys/mcp-build123d@0.2.0\")])'"
+  }
+}
