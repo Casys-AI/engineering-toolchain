@@ -41,14 +41,14 @@ WORKDIR /opt/engineering-toolchain
 COPY deno.json deno.lock ./
 RUN deno cache --frozen \
       jsr:@casys/mcp-syson@0.4.0/server \
-      jsr:@casys/mcp-build123d@0.2.0/server \
+      jsr:@casys/mcp-build123d@0.3.0/server \
       jsr:@casys/mcp-calculix@0.2.1/server \
-      jsr:@casys/mcp-build123d@0.2.0
+      jsr:@casys/mcp-build123d@0.3.0
 
 # Exercise the published package as it will run in the container. This catches
 # non-TypeScript package assets that are missing from Deno's module graph.
 RUN deno eval --cached-only --frozen \
-      'import { runCadScript } from "jsr:@casys/mcp-build123d@0.2.0"; const result = await runCadScript("from build123d import Box\nresult = Box(1, 1, 1)"); if (Math.abs(result.metrics.volume_mm3 - 1) > 1e-9) throw new Error("build123d package smoke test failed");'
+      'import { runCadScript } from "jsr:@casys/mcp-build123d@0.3.0"; const result = await runCadScript("from build123d import Box\nresult = Box(1, 1, 1)"); if (Math.abs(result.metrics.volume_mm3 - 1) > 1e-9) throw new Error("build123d package smoke test failed");'
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
