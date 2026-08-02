@@ -7,7 +7,7 @@
     "jsr:@casys/mcp-server@0.24.0": "0.24.0",
     "jsr:@casys/mcp-server@0.24.1": "0.24.1",
     "jsr:@casys/mcp-server@~0.24.1": "0.24.1",
-    "jsr:@casys/mcp-syson@0.4.0": "0.4.0",
+    "jsr:@casys/mcp-syson@0.5.1": "0.5.1",
     "jsr:@std/internal@^1.0.14": "1.0.14",
     "jsr:@std/path@1": "1.1.6",
     "jsr:@std/yaml@1": "1.1.2",
@@ -63,8 +63,8 @@
         "npm:jose"
       ]
     },
-    "@casys/mcp-syson@0.4.0": {
-      "integrity": "e02422481678127ef1b3fda727530fff4fddfcf515076efb12af9cbe7f088217",
+    "@casys/mcp-syson@0.5.1": {
+      "integrity": "c06f65cd67a321a09cb77f73c71932b25309f511eec23a1327bfb6b520bfca80",
       "dependencies": [
         "jsr:@casys/constraint-solver",
         "jsr:@casys/mcp-server@0.24.0"
@@ -663,7 +663,7 @@
       "jsr:@casys/mcp-build123d@0.3.0",
       "jsr:@casys/mcp-calculix@0.2.1",
       "jsr:@casys/mcp-server@0.24.1",
-      "jsr:@casys/mcp-syson@0.4.0"
+      "jsr:@casys/mcp-syson@0.5.1"
     ]
   }
 }

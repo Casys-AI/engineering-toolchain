@@ -22,7 +22,7 @@ fi
 
 case "$SERVER" in
   syson)
-    exec deno run --config /opt/engineering-toolchain/deno.json --allow-all --cached-only --frozen jsr:@casys/mcp-syson@0.4.0/server "$@"
+    exec deno run --config /opt/engineering-toolchain/deno.json --allow-all --cached-only --frozen jsr:@casys/mcp-syson@0.5.1/server "$@"
     ;;
   build123d)
     exec deno run --config /opt/engineering-toolchain/deno.json --allow-all --cached-only --frozen jsr:@casys/mcp-build123d@0.3.0/server "$@"

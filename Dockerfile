@@ -40,7 +40,7 @@ WORKDIR /work
 WORKDIR /opt/engineering-toolchain
 COPY deno.json deno.lock ./
 RUN deno cache --frozen \
-      jsr:@casys/mcp-syson@0.4.0/server \
+      jsr:@casys/mcp-syson@0.5.1/server \
       jsr:@casys/mcp-build123d@0.3.0/server \
       jsr:@casys/mcp-calculix@0.2.1/server \
       jsr:@casys/mcp-build123d@0.3.0
