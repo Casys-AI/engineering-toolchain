@@ -2,12 +2,12 @@
   "version": "5",
   "specifiers": {
     "jsr:@casys/constraint-solver@0.1.0": "0.1.0",
-    "jsr:@casys/mcp-build123d@0.3.0": "0.3.0",
+    "jsr:@casys/mcp-build123d@0.4.1": "0.4.1",
     "jsr:@casys/mcp-calculix@0.2.1": "0.2.1",
     "jsr:@casys/mcp-server@0.24.0": "0.24.0",
     "jsr:@casys/mcp-server@0.24.1": "0.24.1",
     "jsr:@casys/mcp-server@~0.24.1": "0.24.1",
-    "jsr:@casys/mcp-syson@0.4.0": "0.4.0",
+    "jsr:@casys/mcp-syson@0.5.1": "0.5.1",
     "jsr:@std/internal@^1.0.14": "1.0.14",
     "jsr:@std/path@1": "1.1.6",
     "jsr:@std/yaml@1": "1.1.2",
@@ -26,8 +26,8 @@
         "npm:mathjs"
       ]
     },
-    "@casys/mcp-build123d@0.3.0": {
-      "integrity": "2d5b3be34b9bfba422ff5eea79b3ab1ba1932384aa53b1ebd00857e8b979953e",
+    "@casys/mcp-build123d@0.4.1": {
+      "integrity": "a3466d203fe51684e15c392126289d855abd736723ed7ce325ad5f32a01c8b6f",
       "dependencies": [
         "jsr:@casys/mcp-server@~0.24.1",
         "jsr:@std/path"
@@ -63,8 +63,8 @@
         "npm:jose"
       ]
     },
-    "@casys/mcp-syson@0.4.0": {
-      "integrity": "e02422481678127ef1b3fda727530fff4fddfcf515076efb12af9cbe7f088217",
+    "@casys/mcp-syson@0.5.1": {
+      "integrity": "c06f65cd67a321a09cb77f73c71932b25309f511eec23a1327bfb6b520bfca80",
       "dependencies": [
         "jsr:@casys/constraint-solver",
         "jsr:@casys/mcp-server@0.24.0"
@@ -660,10 +660,10 @@
   "workspace": {
     "dependencies": [
       "jsr:@casys/constraint-solver@0.1.0",
-      "jsr:@casys/mcp-build123d@0.3.0",
+      "jsr:@casys/mcp-build123d@0.4.1",
       "jsr:@casys/mcp-calculix@0.2.1",
       "jsr:@casys/mcp-server@0.24.1",
-      "jsr:@casys/mcp-syson@0.4.0"
+      "jsr:@casys/mcp-syson@0.5.1"
     ]
   }
 }

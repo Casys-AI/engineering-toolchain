@@ -13,11 +13,11 @@ The first argument selects a **stateless HTTP** server. Callers must pass its
 port and hostname explicitly; the image exposes HTTP only.
 
 ```bash
-docker run --rm -p 127.0.0.1:3009:3009 ghcr.io/casys-ai/engineering-toolchain:0.3.0 \
+docker run --rm -p 127.0.0.1:3009:3009 ghcr.io/casys-ai/engineering-toolchain:0.3.2 \
   syson --port=3009 --hostname=0.0.0.0
-docker run --rm -p 127.0.0.1:3014:3014 ghcr.io/casys-ai/engineering-toolchain:0.3.0 \
+docker run --rm -p 127.0.0.1:3014:3014 ghcr.io/casys-ai/engineering-toolchain:0.3.2 \
   build123d --port=3014 --hostname=0.0.0.0
-docker run --rm -p 127.0.0.1:3015:3015 ghcr.io/casys-ai/engineering-toolchain:0.3.0 \
+docker run --rm -p 127.0.0.1:3015:3015 ghcr.io/casys-ai/engineering-toolchain:0.3.2 \
   calculix --port=3015 --hostname=0.0.0.0
 ```
 
@@ -47,18 +47,21 @@ Notes that matter:
 
 ## Version pinning
 
-The image pins exact server versions — `mcp-syson@0.4.0`, `mcp-build123d@0.3.0`,
+The image pins exact server versions — `mcp-syson@0.5.1`, `mcp-build123d@0.4.1`,
 and `mcp-calculix@0.2.1`. `deno.json` keeps a P1D dependency-age quarantine.
 Deno scopes an age exclusion by package name rather than package version, so the
 exclusions are limited to five audited Casys names; their `imports`, Docker
-specifiers and frozen `deno.lock` bind them to `mcp-syson@0.4.0`,
-`mcp-build123d@0.3.0`, `mcp-calculix@0.2.1`, `mcp-server@0.24.1`, and
-`constraint-solver@0.1.0`. The runtime is cached-only. The base is Ubuntu 24.04
-(Debian trixie dropped `calculix-ccx`), with the Deno binary copied from the
-official image.
+specifiers and frozen `deno.lock` bind them to `mcp-syson@0.5.1`,
+`mcp-build123d@0.4.1`, `mcp-calculix@0.2.1`, the required
+`mcp-server@0.24.0`/`0.24.1` variants, and `constraint-solver@0.1.0`. The
+runtime is cached-only. The base is Ubuntu 24.04 (Debian trixie dropped
+`calculix-ccx`), with the Deno binary copied from the official image. The
+underlying Python CAD runtime is pinned to `build123d@0.11.1`.
 
-The `0.3.0` image is published for both `linux/amd64` and `linux/arm64`; Compose
-selects the native architecture instead of forcing emulation.
+The `0.3.2` image is published for both `linux/amd64` and `linux/arm64`; Compose
+selects the native architecture instead of forcing emulation. Its immutable OCI
+index is
+`sha256:257b4de876ad2787bbe0f74c9245dbe92c1193aa0d99ba94f91c01fed6bd0b65`.
 
 ## Security model
 
@@ -73,8 +76,8 @@ themselves never do.
 ## Build locally
 
 ```bash
-docker build -t engineering-toolchain:local-0.3.0 .
-docker run --rm engineering-toolchain:local-0.3.0 calculix --port=3015 --hostname=0.0.0.0
+docker build -t engineering-toolchain:local-0.3.2 .
+docker run --rm engineering-toolchain:local-0.3.2 calculix --port=3015 --hostname=0.0.0.0
 ```
 
 ## License

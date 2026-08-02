@@ -26,8 +26,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # build123d pulls the OCP/OCCT wheel (~150 MB) — the heavyweight layer,
-# kept separate so apt changes do not invalidate it.
-RUN pip3 install --no-cache-dir --break-system-packages build123d
+# kept separate so apt changes do not invalidate it. Pin its public API release
+# just like the MCP wrapper so the primary geometry runtime cannot drift.
+RUN pip3 install --no-cache-dir --break-system-packages build123d==0.11.1
 
 # Exports land on a mountable volume; /work is where callers mount their files.
 ENV BUILD123D_EXPORT_DIR=/exports
@@ -36,19 +37,19 @@ WORKDIR /work
 
 # Pinned server versions, Deno lock and dependency-age policy are versioned
 # together. The only quarantine exclusions are the exact direct Casys pins and
-# their locked @casys/mcp-server@0.24.1 / @casys/constraint-solver@0.1.0 dependencies.
+# their locked @casys/mcp-server / @casys/constraint-solver dependencies.
 WORKDIR /opt/engineering-toolchain
 COPY deno.json deno.lock ./
 RUN deno cache --frozen \
-      jsr:@casys/mcp-syson@0.4.0/server \
-      jsr:@casys/mcp-build123d@0.3.0/server \
+      jsr:@casys/mcp-syson@0.5.1/server \
+      jsr:@casys/mcp-build123d@0.4.1/server \
       jsr:@casys/mcp-calculix@0.2.1/server \
-      jsr:@casys/mcp-build123d@0.3.0
+      jsr:@casys/mcp-build123d@0.4.1
 
 # Exercise the published package as it will run in the container. This catches
 # non-TypeScript package assets that are missing from Deno's module graph.
 RUN deno eval --cached-only --frozen \
-      'import { runCadScript } from "jsr:@casys/mcp-build123d@0.3.0"; const result = await runCadScript("from build123d import Box\nresult = Box(1, 1, 1)"); if (Math.abs(result.metrics.volume_mm3 - 1) > 1e-9) throw new Error("build123d package smoke test failed");'
+      'import { runCadScript } from "jsr:@casys/mcp-build123d@0.4.1"; const result = await runCadScript("from build123d import Box\nresult = Box(1, 1, 1)"); if (Math.abs(result.metrics.volume_mm3 - 1) > 1e-9) throw new Error("build123d package smoke test failed");'
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
