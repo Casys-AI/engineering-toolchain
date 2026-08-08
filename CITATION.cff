@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "engineering-toolchain: One Docker image for the model-to-physics verification chain (mcp-syson + mcp-build123d + mcp-calculix)"
+authors:
+  - family-names: Pesle
+    given-names: Erwan Lee
+year: 2026
+license: MIT
+repository-code: https://github.com/Casys-AI/engineering-toolchain
+type: software
