@@ -28,6 +28,7 @@
   },
   "tasks": {
     "cache": "deno cache --frozen jsr:@casys/mcp-syson@0.6.0/server jsr:@casys/mcp-build123d@0.4.1/server jsr:@casys/mcp-calculix@0.4.0/server jsr:@casys/mcp-build123d@0.4.1",
-    "cache:verify": "deno eval --cached-only --frozen 'await Promise.all([import(\"jsr:@casys/mcp-syson@0.6.0/server\"), import(\"jsr:@casys/mcp-build123d@0.4.1/server\"), import(\"jsr:@casys/mcp-calculix@0.4.0/server\"), import(\"jsr:@casys/mcp-build123d@0.4.1\")])'"
+    "cache:verify": "deno eval --cached-only --frozen 'await Promise.all([import(\"jsr:@casys/mcp-syson@0.6.0/server\"), import(\"jsr:@casys/mcp-build123d@0.4.1/server\"), import(\"jsr:@casys/mcp-calculix@0.4.0/server\"), import(\"jsr:@casys/mcp-build123d@0.4.1\")])'",
+    "verify:pins": "deno run --allow-read scripts/verify-pinned-versions.ts"
   }
 }

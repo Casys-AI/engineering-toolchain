@@ -14,6 +14,15 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      # A bump that misses one file still builds and publishes; the container
+      # then dies at startup on a cache miss. Catch the disagreement first.
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Verify pinned versions agree
+        run: deno task verify:pins
+
       - uses: docker/login-action@v3
         with:
           registry: ghcr.io
