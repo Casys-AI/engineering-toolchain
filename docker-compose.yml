@@ -15,6 +15,9 @@
 # build123d_export is immediately readable by calculix_solve_static at
 # /exports/<name>.step.
 #
+# calculix 0.7 recorded runs live on calculix-runs. Without that volume a
+# container restart drops the ledger that calculix_run_get recovers.
+#
 services:
   syson-db:
     image: postgres:15
@@ -32,8 +35,9 @@ services:
     networks: [chain]
 
   syson-app:
-    # SysON and the engineering-toolchain image are amd64-only. Make the
-    # architecture explicit so Docker Desktop/Colima emulates on Apple Silicon.
+    # SysON's published image is amd64-only. Pin the platform so Docker
+    # Desktop/Colima emulates on Apple Silicon. The toolchain image itself
+    # is multi-arch (linux/amd64 + linux/arm64).
     platform: linux/amd64
     image: "${SYSON_IMAGE:-eclipsesyson/syson:v2026.7.0}"
     ports:
@@ -68,7 +72,7 @@ services:
     networks: [chain]
 
   mcp-syson:
-    image: "${TOOLCHAIN_IMAGE:-ghcr.io/casys-ai/engineering-toolchain:0.3.3}"
+    image: "${TOOLCHAIN_IMAGE:-ghcr.io/casys-ai/engineering-toolchain:0.4.0}"
     command: ["syson", "--port=3009", "--hostname=0.0.0.0"]
     environment:
       SYSON_URL: http://syson-app:8080
@@ -80,7 +84,7 @@ services:
     networks: [chain]
 
   mcp-build123d:
-    image: "${TOOLCHAIN_IMAGE:-ghcr.io/casys-ai/engineering-toolchain:0.3.3}"
+    image: "${TOOLCHAIN_IMAGE:-ghcr.io/casys-ai/engineering-toolchain:0.4.0}"
     command: ["build123d", "--port=3014", "--hostname=0.0.0.0"]
     ports:
       - "127.0.0.1:3014:3014"
@@ -89,12 +93,15 @@ services:
     networks: [chain]
 
   mcp-calculix:
-    image: "${TOOLCHAIN_IMAGE:-ghcr.io/casys-ai/engineering-toolchain:0.3.3}"
+    image: "${TOOLCHAIN_IMAGE:-ghcr.io/casys-ai/engineering-toolchain:0.4.0}"
     command: ["calculix", "--port=3015", "--hostname=0.0.0.0"]
+    environment:
+      CALCULIX_RUNS_DIRECTORY: /var/lib/mcp-calculix-runs
     ports:
       - "127.0.0.1:3015:3015"
     volumes:
       - exports:/exports
+      - calculix-runs:/var/lib/mcp-calculix-runs
     networks: [chain]
 
 networks:
@@ -103,3 +110,4 @@ networks:
 volumes:
   syson-db-data:
   exports:
+  calculix-runs:

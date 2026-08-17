@@ -7,19 +7,23 @@ zero native installs:
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ----------------------- |
 | [`mcp-syson`](https://github.com/Casys-AI/mcp-syson)         | SysML v2 models, constraints, part structure                 | z3 (constraint solving) |
 | [`mcp-build123d`](https://github.com/Casys-AI/mcp-build123d) | parametric CAD as code, exact mass properties, STEP/STL/GLTF | Python + build123d/OCCT |
-| [`mcp-calculix`](https://github.com/Casys-AI/mcp-calculix)   | FEA — meshing + linear static solve                          | Gmsh + CalculiX         |
+| [`mcp-calculix`](https://github.com/Casys-AI/mcp-calculix)   | FEA — meshing + CalculiX solves, including recorded static   | Gmsh + CalculiX         |
 
 The first argument selects a **stateless HTTP** server. Callers must pass its
 port and hostname explicitly; the image exposes HTTP only.
 
 ```bash
-docker run --rm -p 127.0.0.1:3009:3009 ghcr.io/casys-ai/engineering-toolchain:0.3.3 \
+docker run --rm -p 127.0.0.1:3009:3009 ghcr.io/casys-ai/engineering-toolchain:0.4.0 \
   syson --port=3009 --hostname=0.0.0.0
-docker run --rm -p 127.0.0.1:3014:3014 ghcr.io/casys-ai/engineering-toolchain:0.3.3 \
+docker run --rm -p 127.0.0.1:3014:3014 ghcr.io/casys-ai/engineering-toolchain:0.4.0 \
   build123d --port=3014 --hostname=0.0.0.0
-docker run --rm -p 127.0.0.1:3015:3015 ghcr.io/casys-ai/engineering-toolchain:0.3.3 \
+docker run --rm -p 127.0.0.1:3015:3015 ghcr.io/casys-ai/engineering-toolchain:0.4.0 \
   calculix --port=3015 --hostname=0.0.0.0
 ```
+
+Anonymous `docker pull` needs the GHCR package to be **public**. The repo is
+public; the package starts private and is flipped once in the GitHub package
+settings.
 
 ## The whole chain in one command
 
@@ -33,7 +37,8 @@ endpoint is `/mcp`, emits complete responses without an MCP session, and
 publishes its registered viewer resources through `resources/list`.
 `mcp-build123d` and `mcp-calculix` share the `exports` volume, so a STEP
 exported by `build123d_export` is immediately readable by
-`calculix_solve_static` at `/exports/<name>.step`.
+`calculix_solve_static` at `/exports/<name>.step`. Recorded CalculiX runs persist
+on the `calculix-runs` volume.
 
 Notes that matter:
 
@@ -42,26 +47,27 @@ Notes that matter:
 - **Shared volume** — the same named volume (`exports`) mounted in build123d and
   calculix is what lets a STEP flow between them; pass `/exports/<name>.step` as
   `step_path`.
+- **Recorded FEA** — mount `CALCULIX_RUNS_DIRECTORY` (Compose does this) so
+  `calculix_solve_static_recorded` and `calculix_run_get` survive a restart.
 - **HTTP inside a container** — the servers bind loopback by default. Compose
   passes `--hostname=0.0.0.0` so its loopback-only host mappings can reach them.
 
 ## Version pinning
 
-The image pins exact server versions — `mcp-syson@0.6.0`, `mcp-build123d@0.4.1`,
-and `mcp-calculix@0.4.0`. `deno.json` keeps a P1D dependency-age quarantine.
-Deno scopes an age exclusion by package name rather than package version, so the
-exclusions are limited to five audited Casys names; their `imports`, Docker
-specifiers and frozen `deno.lock` bind them to `mcp-syson@0.6.0`,
-`mcp-build123d@0.4.1`, `mcp-calculix@0.4.0`, the required
-`mcp-server@0.24.0`/`0.24.1` variants, and `constraint-solver@0.1.0`. The
-runtime is cached-only. The base is Ubuntu 24.04 (Debian trixie dropped
-`calculix-ccx`), with the Deno binary copied from the official image. The
-underlying Python CAD runtime is pinned to `build123d@0.11.1`.
+The image pins exact server versions — `@casys/mcp-syson@0.6.0`,
+`@casys/mcp-build123d@0.4.1`, and `@casys/mcp-calculix@0.7.0`. `deno.json` keeps
+a P1D dependency-age quarantine. Deno scopes an age exclusion by package name
+rather than package version, so the exclusions are limited to five audited Casys
+names. Each server keeps the `@casys/mcp-server` release it published against
+(0.24.0 / 0.24.1 / 0.26.0); the import map does not force one version on all
+three. `@casys/constraint-solver@0.1.0` stays pinned for SysON. The runtime is
+cached-only. The base is Ubuntu 24.04 (Debian trixie dropped `calculix-ccx`),
+with the Deno binary copied from the official image. The underlying Python CAD
+runtime is pinned to `build123d@0.11.1`.
 
-The `0.3.3` image is published for both `linux/amd64` and `linux/arm64`; Compose
-selects the native architecture instead of forcing emulation. Its immutable
-multi-architecture index digest is
-`sha256:706b2099f947ff3c44c9a532d9da6d96e4312b3cdc879185e37e8d1ac99e1f01`.
+The `0.4.0` image is published for `linux/amd64` and `linux/arm64`. Compose
+selects the native architecture for the toolchain services. SysON itself remains
+amd64-only and is emulated on Apple Silicon.
 
 ## Security model
 
@@ -76,8 +82,8 @@ themselves never do.
 ## Build locally
 
 ```bash
-docker build -t engineering-toolchain:local-0.3.3 .
-docker run --rm engineering-toolchain:local-0.3.3 calculix --port=3015 --hostname=0.0.0.0
+docker build -t engineering-toolchain:local-0.4.0 .
+docker run --rm engineering-toolchain:local-0.4.0 calculix --port=3015 --hostname=0.0.0.0
 ```
 
 ## License
