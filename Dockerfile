@@ -3,7 +3,7 @@
 # One image carrying the full model-to-physics verification chain:
 #   mcp-syson      SysML v2 models, constraints, part structure (z3 for solve)
 #   mcp-build123d  parametric CAD as code (Python/OCCT)
-#   mcp-calculix   FEA — Gmsh meshing + CalculiX linear static
+#   mcp-calculix   FEA — Gmsh meshing + CalculiX solves
 #
 # The first argument selects the stateless HTTP server. The caller supplies
 # its explicit port and hostname, for example: syson --port=3009 --hostname=0.0.0.0
@@ -12,6 +12,11 @@
 # dropped from trixie, while Ubuntu 24.04 carries ccx 2.21, gmsh 4.12 and z3.
 # Deno itself is copied in as a static binary from the official image.
 FROM ubuntu:24.04
+
+LABEL org.opencontainers.image.source="https://github.com/Casys-AI/engineering-toolchain"
+LABEL org.opencontainers.image.licenses="MIT"
+LABEL org.opencontainers.image.title="Casys engineering toolchain"
+LABEL org.opencontainers.image.description="One image for mcp-syson, mcp-build123d and mcp-calculix with z3, Python/OCCT, Gmsh and CalculiX bundled."
 
 COPY --from=denoland/deno:bin-2.9.4 /deno /usr/local/bin/deno
 
@@ -31,19 +36,22 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN pip3 install --no-cache-dir --break-system-packages build123d==0.11.1
 
 # Exports land on a mountable volume; /work is where callers mount their files.
+# Recorded CalculiX runs need their own durable directory or a restart loses
+# the ledger that calculix_solve_static_recorded and calculix_run_get read.
 ENV BUILD123D_EXPORT_DIR=/exports
-RUN mkdir -p /exports /work
+ENV CALCULIX_RUNS_DIRECTORY=/var/lib/mcp-calculix-runs
+RUN mkdir -p /exports /work /var/lib/mcp-calculix-runs
 WORKDIR /work
 
 # Pinned server versions, Deno lock and dependency-age policy are versioned
-# together. The only quarantine exclusions are the exact direct Casys pins and
-# their locked @casys/mcp-server / @casys/constraint-solver dependencies.
+# together. mcp-server is not remapped: each JSR package keeps the version it
+# published against (syson 0.24.0, build123d 0.24.1, calculix 0.26.0).
 WORKDIR /opt/engineering-toolchain
 COPY deno.json deno.lock ./
 RUN deno cache --frozen \
       jsr:@casys/mcp-syson@0.6.0/server \
       jsr:@casys/mcp-build123d@0.4.1/server \
-      jsr:@casys/mcp-calculix@0.4.0/server \
+      jsr:@casys/mcp-calculix@0.7.0/server \
       jsr:@casys/mcp-build123d@0.4.1
 
 # Exercise the published package as it will run in the container. This catches

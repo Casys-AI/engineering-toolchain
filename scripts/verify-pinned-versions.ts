@@ -11,16 +11,27 @@
  * `entrypoint.sh` was not, and the container exited only once deployed.
  *
  * The entrypoint is the authority here: it is the specifier actually executed.
+ *
+ * mcp-server is excluded: the three servers lock different releases, and the
+ * import map must not remap them to one version.
  */
 
 const ROOT = new URL("..", import.meta.url).pathname;
 const SPECIFIER = /@casys\/(mcp-[a-z0-9]+|constraint-solver)@(\d+\.\d+\.\d+)/g;
 const FILES = ["deno.json", "Dockerfile", "entrypoint.sh", "README.md"];
+const SHARED_PACKAGES = new Set([
+  "mcp-syson",
+  "mcp-build123d",
+  "mcp-calculix",
+  "constraint-solver",
+]);
+const IMAGE_TAG_FILES = ["README.md", "docker-compose.yml"];
 
 /** Every distinct version each package is pinned to, per file. */
 function pinsIn(text: string): Map<string, Set<string>> {
   const pins = new Map<string, Set<string>>();
   for (const [, pkg, version] of text.matchAll(SPECIFIER)) {
+    if (!SHARED_PACKAGES.has(pkg)) continue;
     const versions = pins.get(pkg) ?? new Set<string>();
     versions.add(version);
     pins.set(pkg, versions);
@@ -53,6 +64,23 @@ for (const pkg of [...packages].sort()) {
   }
 }
 
+const imageVersion = (await Deno.readTextFile(`${ROOT}VERSION`)).trim();
+if (!/^\d+\.\d+\.\d+$/.test(imageVersion)) {
+  conflicts.push(`VERSION: expected x.y.z, got ${JSON.stringify(imageVersion)}`);
+} else {
+  const tag = new RegExp(
+    String.raw`engineering-toolchain(?::local)?:${imageVersion.replaceAll(".", "\\.")}`,
+  );
+  for (const file of IMAGE_TAG_FILES) {
+    const text = await Deno.readTextFile(`${ROOT}${file}`);
+    if (!tag.test(text)) {
+      conflicts.push(
+        `${file}: missing engineering-toolchain:${imageVersion} (or :local-${imageVersion})`,
+      );
+    }
+  }
+}
+
 if (conflicts.length > 0) {
   console.error("Pinned versions disagree across files:");
   for (const conflict of conflicts) console.error(`  ${conflict}`);
@@ -65,5 +93,5 @@ if (conflicts.length > 0) {
 
 console.log(
   `Pinned versions agree across ${FILES.length} files for ` +
-    `${[...packages].sort().join(", ")}.`,
+    `${[...packages].sort().join(", ")} (image ${imageVersion}).`,
 );
