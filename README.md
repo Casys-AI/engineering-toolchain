@@ -13,11 +13,11 @@ The first argument selects a **stateless HTTP** server. Callers must pass its
 port and hostname explicitly; the image exposes HTTP only.
 
 ```bash
-docker run --rm -p 127.0.0.1:3009:3009 ghcr.io/casys-ai/engineering-toolchain:0.4.0 \
+docker run --rm -p 127.0.0.1:3009:3009 ghcr.io/casys-ai/engineering-toolchain:0.4.1 \
   syson --port=3009 --hostname=0.0.0.0
-docker run --rm -p 127.0.0.1:3014:3014 ghcr.io/casys-ai/engineering-toolchain:0.4.0 \
+docker run --rm -p 127.0.0.1:3014:3014 ghcr.io/casys-ai/engineering-toolchain:0.4.1 \
   build123d --port=3014 --hostname=0.0.0.0
-docker run --rm -p 127.0.0.1:3015:3015 ghcr.io/casys-ai/engineering-toolchain:0.4.0 \
+docker run --rm -p 127.0.0.1:3015:3015 ghcr.io/casys-ai/engineering-toolchain:0.4.1 \
   calculix --port=3015 --hostname=0.0.0.0
 ```
 
@@ -65,7 +65,7 @@ cached-only. The base is Ubuntu 24.04 (Debian trixie dropped `calculix-ccx`),
 with the Deno binary copied from the official image. The underlying Python CAD
 runtime is pinned to `build123d@0.11.1`.
 
-The `0.4.0` image is published for `linux/amd64` and `linux/arm64`. Compose
+The `0.4.1` image is published for `linux/amd64` and `linux/arm64`. Compose
 selects the native architecture for the toolchain services. SysON itself remains
 amd64-only and is emulated on Apple Silicon.
 
@@ -82,8 +82,8 @@ themselves never do.
 ## Build locally
 
 ```bash
-docker build -t engineering-toolchain:local-0.4.0 .
-docker run --rm engineering-toolchain:local-0.4.0 calculix --port=3015 --hostname=0.0.0.0
+docker build -t engineering-toolchain:local-0.4.1 .
+docker run --rm engineering-toolchain:local-0.4.1 calculix --port=3015 --hostname=0.0.0.0
 ```
 
 ## License

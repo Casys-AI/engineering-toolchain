@@ -18,6 +18,11 @@ LABEL org.opencontainers.image.licenses="MIT"
 LABEL org.opencontainers.image.title="Casys engineering toolchain"
 LABEL org.opencontainers.image.description="One image for mcp-syson, mcp-build123d and mcp-calculix with z3, Python/OCCT, Gmsh and CalculiX bundled."
 
+ENV DEBIAN_FRONTEND=noninteractive \
+    PYTHONDONTWRITEBYTECODE=1 \
+    BUILD123D_EXPORT_DIR=/exports \
+    CALCULIX_RUNS_DIRECTORY=/var/lib/mcp-calculix-runs
+
 COPY --from=denoland/deno:bin-2.9.4 /deno /usr/local/bin/deno
 
 # System backends: z3 (constraint solving), gmsh + ccx (FEA), python (CAD)
@@ -30,18 +35,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       z3 \
     && rm -rf /var/lib/apt/lists/*
 
-# build123d pulls the OCP/OCCT wheel (~150 MB) — the heavyweight layer,
+# build123d pulls cadquery-ocp-novtk (~150 MB) — the heavyweight layer,
 # kept separate so apt changes do not invalidate it. Pin its public API release
 # just like the MCP wrapper so the primary geometry runtime cannot drift.
-RUN pip3 install --no-cache-dir --break-system-packages build123d==0.11.1
+# pip is a build tool: drop it after the wheel is installed.
+RUN pip3 install --no-cache-dir --break-system-packages build123d==0.11.1 \
+    && apt-get purge -y python3-pip \
+    && apt-get autoremove -y --purge \
+    && rm -rf /root/.cache /tmp/*
 
-# Exports land on a mountable volume; /work is where callers mount their files.
-# Recorded CalculiX runs need their own durable directory or a restart loses
-# the ledger that calculix_solve_static_recorded and calculix_run_get read.
-ENV BUILD123D_EXPORT_DIR=/exports
-ENV CALCULIX_RUNS_DIRECTORY=/var/lib/mcp-calculix-runs
 RUN mkdir -p /exports /work /var/lib/mcp-calculix-runs
-WORKDIR /work
 
 # Pinned server versions, Deno lock and dependency-age policy are versioned
 # together. mcp-server is not remapped: each JSR package keeps the version it
@@ -52,14 +55,11 @@ RUN deno cache --frozen \
       jsr:@casys/mcp-syson@0.6.0/server \
       jsr:@casys/mcp-build123d@0.4.1/server \
       jsr:@casys/mcp-calculix@0.7.0/server \
-      jsr:@casys/mcp-build123d@0.4.1
+      jsr:@casys/mcp-build123d@0.4.1 \
+    && deno eval --cached-only --frozen \
+      'import { runCadScript } from "jsr:@casys/mcp-build123d@0.4.1"; const result = await runCadScript("from build123d import Box\nresult = Box(1, 1, 1)"); if (Math.abs(result.metrics.volume_mm3 - 1) > 1e-9) throw new Error("build123d package smoke test failed");' \
+    && rm -rf /tmp/* /exports/*
 
-# Exercise the published package as it will run in the container. This catches
-# non-TypeScript package assets that are missing from Deno's module graph.
-RUN deno eval --cached-only --frozen \
-      'import { runCadScript } from "jsr:@casys/mcp-build123d@0.4.1"; const result = await runCadScript("from build123d import Box\nresult = Box(1, 1, 1)"); if (Math.abs(result.metrics.volume_mm3 - 1) > 1e-9) throw new Error("build123d package smoke test failed");'
-
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+COPY --chmod=0755 entrypoint.sh /entrypoint.sh
 WORKDIR /work
 ENTRYPOINT ["/entrypoint.sh"]
