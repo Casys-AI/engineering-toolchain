@@ -4,7 +4,7 @@ title: "engineering-toolchain: One Docker image for the model-to-physics verific
 authors:
   - family-names: Pesle
     given-names: Erwan Lee
-version: "0.4.1"
+version: "0.5.0"
 year: 2026
 license: MIT
 repository-code: https://github.com/Casys-AI/engineering-toolchain

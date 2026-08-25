@@ -53,11 +53,11 @@ WORKDIR /opt/engineering-toolchain
 COPY deno.json deno.lock ./
 RUN deno cache --frozen \
       jsr:@casys/mcp-syson@0.6.0/server \
-      jsr:@casys/mcp-build123d@0.4.1/server \
+      jsr:@casys/mcp-build123d@0.5.0/server \
       jsr:@casys/mcp-calculix@0.7.0/server \
-      jsr:@casys/mcp-build123d@0.4.1 \
+      jsr:@casys/mcp-build123d@0.5.0 \
     && deno eval --cached-only --frozen \
-      'import { runCadScript } from "jsr:@casys/mcp-build123d@0.4.1"; const result = await runCadScript("from build123d import Box\nresult = Box(1, 1, 1)"); if (Math.abs(result.metrics.volume_mm3 - 1) > 1e-9) throw new Error("build123d package smoke test failed");' \
+      'import { runCadScript } from "jsr:@casys/mcp-build123d@0.5.0"; const result = await runCadScript("from build123d import Box\nresult = Box(1, 1, 1)"); if (Math.abs(result.metrics.volume_mm3 - 1) > 1e-9) throw new Error("build123d package smoke test failed");' \
     && rm -rf /tmp/* /exports/*
 
 COPY --chmod=0755 entrypoint.sh /entrypoint.sh
